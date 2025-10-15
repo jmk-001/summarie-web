@@ -8,6 +8,10 @@ export type SignUpDto = {
   password: string;
 };
 
+export type SignUpResponse = {
+  accessToken: string;
+};
+
 export type SignInResponse = {
   accessToken: string;
 };

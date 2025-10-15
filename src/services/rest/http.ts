@@ -1,7 +1,7 @@
 import axios from "axios";
-import router from "../router";
-import { pinia } from "../stores/pinia";
-import { useUserStore } from "../stores/user.store";
+import router from "../../router";
+import { pinia } from "../../stores/pinia";
+import { useUserStore } from "../../stores/user.store";
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE,
