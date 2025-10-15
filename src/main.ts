@@ -1,5 +1,5 @@
 import { createApp, h, provide } from "vue";
-import { pinia } from "./stores/pinia";
+import { pinia } from "./stores";
 import App from "./App.vue";
 import router from "./router";
 import { apolloClient } from "./services/graphql/apollo-client";

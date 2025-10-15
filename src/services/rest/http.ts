@@ -1,6 +1,6 @@
 import axios from "axios";
 import router from "../../router";
-import { pinia } from "../../stores/pinia";
+import { pinia } from "../../stores";
 import { useUserStore } from "../../stores/user.store";
 
 export const http = axios.create({
