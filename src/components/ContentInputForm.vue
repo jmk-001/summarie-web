@@ -25,7 +25,7 @@ const error = ref("");
 </script>
 
 <template>
-  <section class="content">
+  <section class="content-input">
     <input v-model="inputText" />
     <button :disabled="loading" type="button" @click="onSubmit">
       Submit content

@@ -5,10 +5,12 @@ import type { SummaryResultOutput } from "../types/summary.types";
 
 export const useSummaryStore = defineStore("summary", {
   state: () => ({
+    latest: "",
     latestByJobId: {} as Record<string, SummaryResultOutput>,
   }),
   getters: {
-    getLatest: (state) => (jobId: string) => state.latestByJobId[jobId],
+    getLatest: (state) => state.latest,
+    getLatestByJobId: (state) => (jobId: string) => state.latestByJobId[jobId],
   },
   actions: {
     processSummary(jobId: string) {
@@ -23,6 +25,7 @@ export const useSummaryStore = defineStore("summary", {
         next: ({ data }) => {
           if (data?.processSummary) {
             this.latestByJobId[jobId] = data.processSummary;
+            this.latest = data.processSummary.content;
           }
         },
         error: (err) => {

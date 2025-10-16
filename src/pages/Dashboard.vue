@@ -12,12 +12,14 @@ import {
 import type { CreateSummaryJobInput } from "../types";
 import type { CreateDocumentInput } from "../types/document.types";
 import type { SummaryResultOutput } from "../types/summary.types";
+import ContentOutputForm from "../components/ContentOutputForm.vue";
 
 const user = useUserStore();
 const document = useDocumentStore();
 const summaryJob = useSummaryJobStore();
 const summary = useSummaryStore();
 const loading = ref(false);
+const outputOpened = ref(false);
 
 function logout() {
   user.logout();
@@ -53,23 +55,22 @@ async function onSubmitContent(payload: { content: string }) {
 
   const { observable } = await summary.processSummary(summaryJob.id);
 
-  const firstResult = await new Promise<SummaryResultOutput>(
-    (resolve, reject) => {
-      const sub = observable.subscribe({
-        next: ({ data }) => {
-          if (data?.processSummary) {
-            resolve(data.processSummary);
-            sub.unsubscribe();
-          }
-        },
-        error: reject,
-      });
-    }
-  );
+  const result = await new Promise<SummaryResultOutput>((resolve, reject) => {
+    const sub = observable.subscribe({
+      next: ({ data }) => {
+        if (data?.processSummary) {
+          resolve(data.processSummary);
+          sub.unsubscribe();
+        }
+      },
+      error: reject,
+    });
+  });
 
-  console.log(firstResult);
+  console.log(result);
 
   loading.value = false;
+  outputOpened.value = true;
 }
 </script>
 
@@ -80,6 +81,10 @@ async function onSubmitContent(payload: { content: string }) {
       <button @click="logout">Logout</button>
     </header>
     <ContentInputForm :loading="loading" @submit="onSubmitContent" />
+    <ContentOutputForm
+      :output-opened="outputOpened"
+      :content="summary.getLatest"
+    />
   </section>
 </template>
 
