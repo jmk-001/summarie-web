@@ -21,3 +21,17 @@ export const CREATE_SUMMARY_JOB = gql`
     }
   }
 `;
+
+export const PROCESS_SUMMARY = gql`
+  subscription ProcessSummary($jobId: String!) {
+    processSummary(jobId: $jobId) {
+      id
+      userId
+      jobId
+      content
+      tokensUsed
+      model
+      createdAt
+    }
+  }
+`;

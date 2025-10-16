@@ -4,13 +4,19 @@ import router from "../router";
 import ContentInputForm from "../components/ContentInputForm.vue";
 import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
-import { useDocumentStore, useSummaryJobStore } from "../stores";
+import {
+  useDocumentStore,
+  useSummaryJobStore,
+  useSummaryStore,
+} from "../stores";
 import type { CreateSummaryJobInput } from "../types";
 import type { CreateDocumentInput } from "../types/document.types";
+import type { SummaryResultOutput } from "../types/summary.types";
 
 const user = useUserStore();
 const document = useDocumentStore();
 const summaryJob = useSummaryJobStore();
+const summary = useSummaryStore();
 const loading = ref(false);
 
 function logout() {
@@ -42,10 +48,27 @@ async function onSubmitContent(payload: { content: string }) {
   loading.value = true;
 
   const document = await createDocument(payload.content);
-  console.log(document);
 
   const summaryJob = await createSummaryJob(document.id);
-  console.log(summaryJob);
+
+  const { observable } = await summary.processSummary(summaryJob.id);
+
+  const firstResult = await new Promise<SummaryResultOutput>(
+    (resolve, reject) => {
+      const sub = observable.subscribe({
+        next: ({ data }) => {
+          if (data?.processSummary) {
+            resolve(data.processSummary);
+            sub.unsubscribe();
+          }
+        },
+        error: reject,
+      });
+    }
+  );
+
+  console.log(firstResult);
+
   loading.value = false;
 }
 </script>
