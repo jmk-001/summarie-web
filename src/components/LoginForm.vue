@@ -51,39 +51,43 @@ function switchMode(next: AuthMode) {
 
 <template>
   <section class="login">
-    <h2>Sign in</h2>
+    <form class="flex flex-wrap items-end gap-3" @submit.prevent="onSubmit">
+      <div class="flex flex-col">
+        <input
+          v-model="email"
+          id="email"
+          type="email"
+          required
+          autocomplete="username"
+          placeholder="Email address"
+          class="block rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
+        />
+      </div>
 
-    <form @submit.prevent="onSubmit" class="form">
-      <label>
-        Email
-        <input v-model="email" type="email" required autocomplete="username" />
-      </label>
-
-      <label>
-        Password
+      <div class="flex flex-col">
+        <label for="password" class="sr-only">Password</label>
         <input
           v-model="password"
+          id="password"
           type="password"
           required
           autocomplete="current-password"
+          placeholder="Password"
+          class="block rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-      </label>
+      </div>
 
-      <label v-if="mode === 'SignUp'">
-        Repeat password
+      <div class="flex flex-col" v-if="mode === 'SignUp'">
+        <label for="password" class="sr-only">Password</label>
         <input
           v-model="passwordRepeat"
+          id="password"
           type="password"
           required
-          autocomplete="new-password"
+          placeholder="Repeat password"
+          class="block rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-      </label>
-
-      <button :disabled="loading" type="submit">
-        {{
-          loading ? "Signing in…" : mode === "SignIn" ? "Sign in" : "Sign up"
-        }}
-      </button>
+      </div>
 
       <div class="tabs">
         <button
@@ -102,37 +106,17 @@ function switchMode(next: AuthMode) {
         </button>
       </div>
 
+      <button
+        :disabled="loading"
+        type="submit"
+        class="mb-3 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {{
+          loading ? "Signing in…" : mode === "SignIn" ? "Sign in" : "Sign up"
+        }}
+      </button>
+
       <p v-if="localError" class="error">{{ localError }}</p>
     </form>
   </section>
 </template>
-
-<style scoped>
-.login {
-  max-width: 420px;
-  margin: 48px auto;
-  padding: 0 16px;
-}
-.form {
-  display: grid;
-  gap: 12px;
-}
-input {
-  width: 100%;
-  padding: 8px;
-}
-button {
-  padding: 8px 12px;
-}
-.error {
-  color: #b00020;
-}
-.tabs {
-  display: flex;
-  gap: 8px;
-}
-.tabs .active {
-  font-weight: bold;
-  text-decoration: underline;
-}
-</style>

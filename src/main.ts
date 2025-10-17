@@ -4,6 +4,8 @@ import App from "./App.vue";
 import router from "./router";
 import { apolloClient } from "./services/graphql/apollo-client";
 import { DefaultApolloClient } from "@vue/apollo-composable";
+import "./index.css";
+import "./assets/tailwind.css";
 
 export const apolloProvider = {
   provide: {

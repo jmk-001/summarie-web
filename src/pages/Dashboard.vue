@@ -4,6 +4,7 @@ import ContentInput from "../components/ContentInput.vue";
 import ContentOutputForm from "../components/ContentOutput.vue";
 import { useUserStore } from "../stores";
 import { useSummaryFlow } from "../composables/useSummaryFlow";
+import ThemeSwitch from "../components/ThemeSwitch.vue";
 
 const user = useUserStore();
 const { loading, outputOpened, latestSummary, run, reset, error } =
@@ -25,6 +26,7 @@ async function onSubmitContent(payload: { content: string }) {
 
 <template>
   <section class="dash">
+    <ThemeSwitch />
     <header class="row">
       <h2>Dashboard</h2>
       <button @click="logout">Logout</button>
@@ -41,20 +43,3 @@ async function onSubmitContent(payload: { content: string }) {
     <p v-if="error" class="error">{{ error.message }}</p>
   </section>
 </template>
-
-<style scoped>
-.dash {
-  max-width: 720px;
-  margin: 24px auto;
-  padding: 0 12px;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.error {
-  color: #c00;
-  margin-top: 12px;
-}
-</style>
