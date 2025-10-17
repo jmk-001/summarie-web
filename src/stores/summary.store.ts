@@ -4,16 +4,13 @@ import { PROCESS_SUMMARY } from "../services/graphql";
 import type { SummaryResultOutput } from "../types/summary.types";
 
 export const useSummaryStore = defineStore("summary", {
-  state: () => ({
-    latest: "",
-    latestByJobId: {} as Record<string, SummaryResultOutput>,
-  }),
-  getters: {
-    getLatest: (state) => state.latest,
-    getLatestByJobId: (state) => (jobId: string) => state.latestByJobId[jobId],
-  },
+  state: () => ({ latest: "" }),
+  getters: { getLatest: (s) => s.latest },
   actions: {
-    processSummary(jobId: string) {
+    processSummaryOnce(jobId: string): {
+      promise: Promise<SummaryResultOutput>;
+      stop: () => void;
+    } {
       const observable = apolloClient.subscribe<{
         processSummary: SummaryResultOutput;
       }>({
@@ -21,25 +18,48 @@ export const useSummaryStore = defineStore("summary", {
         variables: { jobId },
       });
 
+      let settled = false;
       const sub = observable.subscribe({
         next: ({ data }) => {
-          if (data?.processSummary) {
-            this.latestByJobId[jobId] = data.processSummary;
-            this.latest = data.processSummary.content;
-          }
+          if (settled) return;
+          const result = data?.processSummary;
+          if (!result) return;
+          settled = true;
+          this.latest = result.content;
+          sub.unsubscribe();
+          resolve(result);
         },
         error: (err) => {
-          console.error("[processSummary] subscription error", err);
+          if (settled) return;
+          settled = true;
+          sub.unsubscribe();
+          reject(err);
         },
         complete: () => {
-          // optional: mark as completed
+          if (!settled) {
+            settled = true;
+            sub.unsubscribe();
+            reject(new Error("Subscription completed without data"));
+          }
         },
       });
 
-      return {
-        unsubscribe: () => sub.unsubscribe(),
-        observable,
+      let resolve!: (v: SummaryResultOutput) => void;
+      let reject!: (e: any) => void;
+      const promise = new Promise<SummaryResultOutput>((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+
+      const stop = () => {
+        if (!settled) {
+          settled = true;
+          sub.unsubscribe();
+          reject(new DOMException("Aborted", "AbortError"));
+        }
       };
+
+      return { promise, stop };
     },
   },
 });
