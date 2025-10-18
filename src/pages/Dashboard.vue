@@ -25,7 +25,7 @@ async function onSubmitContent(payload: { content: string }) {
 </script>
 
 <template>
-  <section class="dash">
+  <section class="dash flex flex-col min-h-dvh px-4 md:px-8">
     <ThemeSwitch />
     <header class="row">
       <h2>Dashboard</h2>
