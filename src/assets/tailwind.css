@@ -12,4 +12,9 @@
 @theme {
   --color-primary: var(--color-primary);
   --color-secondary: var(--color-secondary);
+
+  --color-text: var(--color-text);
+  --color-accent: var(--color-accent);
+
+  --color-green: var(--color-green);
 }

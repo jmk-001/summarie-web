@@ -1,9 +1,17 @@
 :root {
-  --color-primary: #808080; /* Light mode primary */
-  --color-secondary: #33ff57; /* Light mode secondary */
+  --color-primary: #f8f9fa;
+  --color-secondary: #e2e8f0;
+  --color-accent: #33ff57;
+  --color-text: #1a1a1a;
+
+  --color-green: #13952b;
 }
 
 .dark {
-  --color-primary: #1a202c; /* Dark mode primary */
-  --color-secondary: #33ff57; /* Dark mode secondary */
+  --color-primary: #1e1f24;
+  --color-secondary: #2c2f36;
+  --color-accent: #33ff57;
+  --color-text: #e5e7eb;
+
+  --color-green: #13952b;
 }

@@ -50,73 +50,112 @@ function switchMode(next: AuthMode) {
 </script>
 
 <template>
-  <section class="login">
-    <form class="flex flex-wrap items-end gap-3" @submit.prevent="onSubmit">
-      <div class="flex flex-col">
-        <input
-          v-model="email"
-          id="email"
-          type="email"
-          required
-          autocomplete="username"
-          placeholder="Email address"
-          class="block rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700"
-        />
+  <section
+    class="min-h-screen bg-primary flex items-center justify-center px-4"
+  >
+    <div
+      class="w-full max-w-md rounded-2xl border border-black/10 dark:border-white/10 bg-secondary shadow-xl backdrop-blur p-6 md:p-8"
+    >
+      <!-- Brand / header -->
+      <div class="mb-6 text-center">
+        <h1 class="text-xl font-semibold tracking-tight">Welcome</h1>
+        <p class="mt-1 text-sm">
+          {{
+            mode === "SignIn"
+              ? "Sign in to your account"
+              : "Create your account"
+          }}
+        </p>
       </div>
 
-      <div class="flex flex-col">
-        <label for="password" class="sr-only">Password</label>
-        <input
-          v-model="password"
-          id="password"
-          type="password"
-          required
-          autocomplete="current-password"
-          placeholder="Password"
-          class="block rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <!-- Form -->
+      <form class="space-y-4" @submit.prevent="onSubmit" novalidate>
+        <!-- Email -->
+        <div>
+          <label for="email" class="mb-1 block text-sm font-medium"
+            >Email address</label
+          >
+          <input
+            v-model="email"
+            id="email"
+            type="email"
+            required
+            autocomplete="username"
+            placeholder="you@example.com"
+            class="block w-full rounded-lg border border-black/10 bg-primary px-3 py-2.5 text-sm outline-none ring-0 focus:border-transparent focus:ring-2 focus:ring-secondsary/60"
+          />
+        </div>
 
-      <div class="flex flex-col" v-if="mode === 'SignUp'">
-        <label for="password" class="sr-only">Password</label>
-        <input
-          v-model="passwordRepeat"
-          id="password"
-          type="password"
-          required
-          placeholder="Repeat password"
-          class="block rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+        <!-- Password -->
+        <div>
+          <label for="password" class="mb-1 block text-sm font-medium"
+            >Password</label
+          >
+          <input
+            v-model="password"
+            id="password"
+            type="password"
+            required
+            autocomplete="current-password"
+            placeholder=""
+            class="block w-full rounded-lg border border-black/10 bg-primary px-3 py-2.5 text-sm outline-none ring-0 focus:border-transparent focus:ring-2 focus:ring-secondsary/60"
+          />
+        </div>
 
-      <div class="tabs">
-        <button
-          :class="{ active: mode === 'SignIn' }"
-          type="button"
-          @click="switchMode('SignIn')"
+        <!-- Repeat (signup only) -->
+        <div v-if="mode === 'SignUp'">
+          <label for="passwordRepeat" class="mb-1 block text-sm font-medium"
+            >Repeat password</label
+          >
+          <input
+            v-model="passwordRepeat"
+            id="passwordRepeat"
+            type="password"
+            required
+            placeholder=""
+            class="block w-full rounded-lg border border-black/10 bg-primary px-3 py-2.5 text-sm outline-none ring-0 focus:border-transparent focus:ring-2 focus:ring-secondsary/60"
+          />
+        </div>
+
+        <!-- Error -->
+        <p
+          v-if="localError || error"
+          class="text-sm text-red-600 dark:text-red-400"
+          aria-live="polite"
         >
-          Sign in
-        </button>
-        <button
-          :class="{ active: mode === 'SignUp' }"
-          type="button"
-          @click="switchMode('SignUp')"
-        >
-          Create account
-        </button>
-      </div>
+          {{ localError || error }}
+        </p>
 
-      <button
-        :disabled="loading"
-        type="submit"
-        class="mb-3 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        {{
-          loading ? "Signing in…" : mode === "SignIn" ? "Sign in" : "Sign up"
-        }}
-      </button>
-
-      <p v-if="localError" class="error">{{ localError }}</p>
-    </form>
+        <!-- Actions -->
+        <div class="pt-2">
+          <button
+            :disabled="loading"
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-lg bg-green px-4 py-2.5 text-sm font-medium text-gray-200 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-secondsary/60 disabled:opacity-60 disabled:cursor-not-allowed hover:cursor-pointer"
+          >
+            {{
+              loading
+                ? "Please wait…"
+                : mode === "SignIn"
+                ? "Sign in"
+                : "Create account"
+            }}
+          </button>
+          <div class="mt-3 text-center">
+            <button
+              type="button"
+              @click="switchMode(mode === 'SignIn' ? 'SignUp' : 'SignIn')"
+              class="text-sm underline-offset-4 hover:underline hover:cursor-pointer"
+            >
+              {{
+                mode === "SignIn"
+                  ? "Need an account? Sign up"
+                  : "Have an account? Sign in"
+              }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </section>
 </template>
