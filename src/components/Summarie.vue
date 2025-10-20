@@ -5,6 +5,11 @@ import lottie, { type AnimationItem } from "lottie-web";
 import intro from "../assets/lottie/intro.json";
 import blink from "../assets/lottie/blink.json";
 
+const { size, playIntro } = defineProps<{
+  size: number;
+  playIntro: boolean;
+}>();
+
 const container = ref<HTMLDivElement | null>(null);
 let baseAnim: AnimationItem | null = null;
 let blinkAnim: AnimationItem | null = null;
@@ -47,22 +52,26 @@ function playBlink() {
 }
 
 onMounted(() => {
-  baseAnim = lottie.loadAnimation({
-    container: container.value!,
-    renderer: "svg",
-    autoplay: true,
-    loop: false,
-    animationData: intro,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid meet",
-      progressiveLoad: true,
-    },
-  });
-  baseAnim.play();
+  if (playIntro) {
+    baseAnim = lottie.loadAnimation({
+      container: container.value!,
+      renderer: "svg",
+      autoplay: true,
+      loop: false,
+      animationData: intro,
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid meet",
+        progressiveLoad: true,
+      },
+    });
+    baseAnim.play();
 
-  baseAnim.addEventListener("complete", () => {
-    scheduleBlink();
-  });
+    baseAnim.addEventListener("complete", () => {
+      scheduleBlink();
+    });
+  } else {
+    playBlink();
+  }
 });
 
 onBeforeUnmount(() => {
@@ -75,6 +84,10 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="container"
-    style="width: 300px; height: 300px; position: relative"
+    :style="{
+      width: size + 'px',
+      height: size + 'px',
+      position: 'relative',
+    }"
   ></div>
 </template>

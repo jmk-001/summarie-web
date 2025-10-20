@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import Summarie from "./Summarie.vue";
 
 const { loading = false } = defineProps<{ loading?: boolean }>();
 
@@ -35,49 +36,11 @@ const tooLong = computed(() => chars.value > 20000);
 
 <template>
   <section
-    class="content-input flex flex-col min-h-[90dvh] gap-4 text-text"
+    class="content-input flex h-full flex-col min-h-0 gap-4 text-text px-[1%]"
     aria-labelledby="content-form-title"
   >
     <header class="flex items-end justify-between">
-      <div>
-        <h3 id="content-form-title" class="text-xl font-semibold">
-          Add content to summarize
-        </h3>
-        <p class="text-sm opacity-70">
-          Paste raw text or a URL. Press
-          <kbd class="px-1 py-0.5 rounded bg-secondary/60">Ctrl</kbd> /
-          <kbd class="px-1 py-0.5 rounded bg-secondary/60">⌘</kbd> +
-          <kbd class="px-1 py-0.5 rounded bg-secondary/60">Enter</kbd>
-          to submit.
-        </p>
-      </div>
-
-      <span
-        class="text-xs tabular-nums"
-        :class="tooLong ? 'text-red-500' : 'opacity-60'"
-      >
-        {{ chars.toLocaleString() }} / 20000
-      </span>
-    </header>
-
-    <textarea
-      v-model="inputText"
-      :aria-invalid="!!error || tooLong"
-      :aria-describedby="error ? 'content-error' : undefined"
-      class="flex-1 min-h-0 w-full resize-none outline-none border border-secondary rounded-2xl p-4 md:p-6 bg-primary text-text placeholder:opacity-60 leading-relaxed ring-0 focus:border-transparent focus:ring-1 focus:ring-accent/60"
-      placeholder="Paste the article, notes, transcript, or URL here…"
-    />
-
-    <div class="flex items-center justify-between">
-      <p
-        v-if="error || tooLong"
-        id="content-error"
-        class="text-sm text-red-500"
-        role="alert"
-      >
-        {{ error || "This is longer than the recommended limit." }}
-      </p>
-
+      <Summarie :size="50" :play-intro="false" />
       <button
         type="button"
         :disabled="loading || tooLong"
@@ -108,6 +71,33 @@ const tooLong = computed(() => chars.value > 20000);
         </svg>
         <span>{{ loading ? "" : "Summarize" }}</span>
       </button>
+    </header>
+
+    <textarea
+      v-model="inputText"
+      :aria-invalid="!!error || tooLong"
+      :aria-describedby="error ? 'content-error' : undefined"
+      class="flex-1 min-h-0 w-full resize-none outline-none border border-secondary rounded-2xl p-4 md:p-6 bg-primary text-text placeholder:opacity-60 leading-relaxed ring-0 focus:border-transparent focus:ring-1 focus:ring-accent/60"
+      placeholder="Paste the article, notes, transcript, or URL here…"
+    />
+
+    <div class="flex items-center justify-between">
+      <div class="text-sm min-h-[1em]">
+        <p
+          v-if="error || tooLong"
+          id="content-error"
+          class="text-red-500"
+          role="alert"
+        >
+          {{ error || "This is longer than the recommended limit." }}
+        </p>
+      </div>
+      <span
+        class="text-xs tabular-nums"
+        :class="tooLong ? 'text-red-500' : 'opacity-60'"
+      >
+        {{ chars.toLocaleString() }} / 20000
+      </span>
     </div>
   </section>
 </template>

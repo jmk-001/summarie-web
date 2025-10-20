@@ -51,7 +51,7 @@ function switchMode(next: AuthMode) {
 </script>
 
 <template>
-  <section class="min-h-dvh bg-primary flex items-center justify-center px-4">
+  <section class="h-dvh bg-primary flex items-center justify-center px-4">
     <!-- Outer card wrapper -->
     <div
       class="w-full max-w-4xl rounded-2xl border border-black/10 dark:border-white/10 bg-secondary shadow-xl backdrop-blur overflow-hidden"
@@ -62,14 +62,13 @@ function switchMode(next: AuthMode) {
       >
         <!-- Left: mascot -->
         <div class="basis-1/2 flex items-center justify-center p-6 md:p-8">
-          <Summarie />
+          <Summarie :size="300" :play-intro="true" />
         </div>
 
         <!-- Right: login form -->
         <div class="basis-1/2 p-6 md:p-8">
           <!-- Brand / header -->
           <div class="mb-6 text-center">
-            <h1 class="text-xl font-semibold tracking-tight">Welcome</h1>
             <p class="mt-1 text-sm">
               {{
                 mode === "SignIn"
