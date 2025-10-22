@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import router from "../router";
 import { useUserStore } from "../stores";
-import ThemeSwitch from "../components/ThemeSwitch.vue";
 import ContentIO from "../components/ContentIO.vue";
 import MainMenuDropdown from "../components/MainMenuDropdown.vue";
+import { useModalStore } from "../stores/modal.store";
+import PresetCreationModal from "../components/PresetCreationModal.vue";
+import { UserCircleIcon } from "@heroicons/vue/16/solid";
 
 const user = useUserStore();
+const modal = useModalStore();
 
 function logout() {
   user.logout();
@@ -14,25 +17,21 @@ function logout() {
 </script>
 
 <template>
-  <!-- Full viewport height, responsive padding x=10% y=1% -->
   <section class="dash h-dvh flex flex-col px-[10%] py-[0.5%] gap-y-2">
-    <!-- Optional theme switch row -->
-    <!-- <ThemeSwitch /> -->
-
-    <!-- Header row (auto height) -->
     <header class="row flex items-center justify-between">
       <MainMenuDropdown />
       <button
         @click="logout"
         class="underline underline-offset-4 hover:opacity-80"
       >
-        Logout
+        <UserCircleIcon class="w-6 h-6 text-text" />
       </button>
     </header>
 
-    <!-- Main area should fill the rest of the screen -->
     <div class="flex-1 min-h-0">
       <ContentIO />
     </div>
+
+    <PresetCreationModal v-if="modal.isPresetCreationModalOpened" />
   </section>
 </template>

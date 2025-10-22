@@ -16,13 +16,12 @@ async function onSubmitContent(payload: { content: string }) {
 </script>
 
 <template>
-  <!-- Fill parent, vertical layout -->
   <section class="content-io flex h-full flex-col min-h-0">
     <!-- Card wrapper -->
     <div
       class="w-full h-full rounded-2xl border border-black/10 dark:border-white/10 bg-secondary shadow-xl backdrop-blur overflow-hidden"
     >
-      <!-- Responsive layout: stack on mobile, 2 columns from md up -->
+      <!-- Stack on mobile, 2 columns from md up -->
       <div
         class="grid h-full min-h-0 grid-rows-[1fr_1fr] md:grid-rows-1 md:grid-cols-2"
       >

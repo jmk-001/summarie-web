@@ -42,7 +42,7 @@ function closeDropdown() {
 
     <div
       v-if="isOpen"
-      class="origin-bottom-left absolute left-0 top-full mt-1 w-40 rounded-md ring-1 ring-black ring-opacity-5 bg-secondary z-[1000]"
+      class="origin-bottom-left absolute left-0 top-full mt-1 w-40 rounded-md shadow-lg bg-secondary z-[1000]"
     >
       <div class="py-1">
         <button
@@ -57,7 +57,3 @@ function closeDropdown() {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Optional: click outside to close could be added via v-click-outside directive */
-</style>

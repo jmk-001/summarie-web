@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Summarie from "./Summarie.vue";
+import { useModalStore } from "../stores/modal.store";
 
 const { loading = false } = defineProps<{ loading?: boolean }>();
 
@@ -10,6 +11,7 @@ const emit = defineEmits<{
 
 const inputText = ref("");
 const error = ref("");
+const modal = useModalStore();
 
 function submitNow() {
   error.value = "";
@@ -41,6 +43,13 @@ const tooLong = computed(() => chars.value > 20000);
   >
     <header class="flex items-end justify-between">
       <Summarie :size="50" :play-intro="false" />
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 px-4 md:px-5 h-10 rounded-xl bg-seocndary text-text font-medium disabled:opacity-60 disabled:cursor-not-allowed hover:opacity-95 active:opacity-90 transition-opacity"
+        @click="modal.openPresetCreationModal()"
+      >
+        Create prompt preset
+      </button>
       <button
         type="button"
         :disabled="loading || tooLong"
