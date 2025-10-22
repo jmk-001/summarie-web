@@ -3,6 +3,7 @@ import router from "../router";
 import { useUserStore } from "../stores";
 import ThemeSwitch from "../components/ThemeSwitch.vue";
 import ContentIO from "../components/ContentIO.vue";
+import MainMenuDropdown from "../components/MainMenuDropdown.vue";
 
 const user = useUserStore();
 
@@ -14,12 +15,13 @@ function logout() {
 
 <template>
   <!-- Full viewport height, responsive padding x=10% y=1% -->
-  <section class="dash h-dvh flex flex-col px-[10%] py-[1%] gap-y-4">
+  <section class="dash h-dvh flex flex-col px-[10%] py-[0.5%] gap-y-2">
     <!-- Optional theme switch row -->
     <!-- <ThemeSwitch /> -->
 
     <!-- Header row (auto height) -->
-    <header class="row flex items-center justify-end">
+    <header class="row flex items-center justify-between">
+      <MainMenuDropdown />
       <button
         @click="logout"
         class="underline underline-offset-4 hover:opacity-80"

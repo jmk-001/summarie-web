@@ -12,6 +12,7 @@
     "@apollo/client": "^3.14.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vue/apollo-composable": "^4.2.2",
+    "@vueuse/components": "^13.9.0",
     "axios": "^1.12.2",
     "graphql": "^16.11.0",
     "graphql-ws": "^6.0.6",
