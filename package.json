@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.14.0",
+    "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vue/apollo-composable": "^4.2.2",
     "@vueuse/components": "^13.9.0",
