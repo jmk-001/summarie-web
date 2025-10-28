@@ -21,3 +21,12 @@ export const CREATE_SUMMARY_JOB = gql`
     }
   }
 `;
+
+export const CREATE_PROMPT_PRESET = gql`
+  mutation CreatePromptPreset($data: CreatePromptPresetInput!) {
+    createPromptPreset(data: $data) {
+      id
+      createdAt
+    }
+  }
+`;
