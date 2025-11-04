@@ -4,7 +4,7 @@ import { useUserStore } from "../stores";
 import ContentIO from "../components/ContentIO.vue";
 import MainMenuDropdown from "../components/MainMenuDropdown.vue";
 import { useModalStore } from "../stores/modal.store";
-import PresetCreationModal from "../components/PresetCreationModal.vue";
+import PresetCreationModal from "../components/prompt-preset/PresetCreationModal.vue";
 import { UserCircleIcon } from "@heroicons/vue/16/solid";
 
 const user = useUserStore();

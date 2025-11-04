@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Dropdown, { type DropdownItem } from "./Dropdown.vue";
-import { Bars3BottomLeftIcon } from "@heroicons/vue/16/solid";
 
 const mainMenuDropdownItems: DropdownItem[] = [
   { label: "Item 1", onClick: () => {} },

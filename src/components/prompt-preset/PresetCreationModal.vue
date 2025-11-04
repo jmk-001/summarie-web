@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
-import { useModalStore } from "../stores/modal.store";
-import Slider from "./Slider.vue";
+import { onMounted, onUnmounted, reactive } from "vue";
+import { useModalStore } from "../../stores/modal.store";
+import PromptPresetForm from "./PromptPresetForm.vue";
+import { formSpecV1 } from "../../presets/v1/form-spec";
 
 const modal = useModalStore();
-const length = ref(30);
+const params = reactive<Record<string, any>>({});
 
 function closeModal() {
   modal.closePresetCreationModal();
@@ -42,29 +43,30 @@ onUnmounted(() => {
 
       <!-- Modal container -->
       <div
-        class="relative z-10 w-[90%] max-w-lg mx-auto rounded-2xl border border-black/10 dark:border-white/10 bg-secondary shadow-2xl backdrop-blur p-6 md:p-8 flex flex-col"
+        class="relative z-10 w-[92%] sm:w-[90%] max-w-xl lg:max-w-2xl mx-auto rounded-2xl border border-black/10 dark:border-white/10 bg-secondary shadow-2xl p-6 md:p-5 flex flex-col max-h-[50vh] overflow-hidden"
       >
         <!-- Close button -->
         <button
           @click="closeModal"
-          class="absolute top-4 left-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-xl"
+          class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors text-xl"
           aria-label="Close modal"
         >
           ✕
         </button>
 
-        <!-- Modal content -->
-        <h2
-          id="preset-creation-modal-title"
-          class="text-lg font-semibold text-center text-gray-800 dark:text-gray-200 mb-4"
-        >
-          Create Preset
-        </h2>
+        <!-- Create preset button -->
+        <div class="absolute bottom-10 right-14">
+          <button
+            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition-colors"
+            @click=""
+          >
+            Create preset
+          </button>
+        </div>
 
-        <div
-          class="flex-1 min-h-0 overflow-auto flex items-center justify-center"
-        >
-          <Slider v-model="length" :min="0" :max="100" />
+        <!-- Modal content -->
+        <div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+          <PromptPresetForm :spec="formSpecV1" v-model="params" />
         </div>
       </div>
     </div>

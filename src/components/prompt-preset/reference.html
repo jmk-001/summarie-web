@@ -1,0 +1,224 @@
+ <div v-show="isOpen(field.key)" class="px-4 pb-4 pt-1">
+        <!-- SELECT -->
+        <div v-if="field.kind === 'select'" class="mt-2">
+          <label class="sr-only">{{ field.label }}</label>
+          <select
+            class="w-full px-3 py-2 rounded-lg bg-primary border border-secondary text-text focus:outline-none focus:ring-1 focus:ring-accent/60"
+            :value="getByPath(model, field.key) ?? ''"
+            @change="
+              setByPath(
+                model,
+                field.key,
+                ($event.target as HTMLSelectElement).value
+              )
+            "
+          >
+            <option value="" disabled>Select...</option>
+            <option
+              v-for="opt in (field as SelectField).options"
+              :key="opt"
+              :value="opt"
+            >
+              {{ opt }}
+            </option>
+          </select>
+          <p v-if="field.help" class="mt-1 text-xs opacity-70">
+            {{ field.help }}
+          </p>
+        </div>
+
+        <!-- INPUT -->
+        <div v-else-if="field.kind === 'input'" class="mt-2">
+          <input
+            :type="(field as InputField).type ?? 'text'"
+            class="w-full px-3 py-2 rounded-lg bg-primary border border-secondary text-text focus:outline-none focus:ring-1 focus:ring-accent/60"
+            :placeholder="(field as InputField).placeholder ?? ''"
+            :value="getByPath(model, field.key) ?? ''"
+            @input="
+              (e) => {
+                const val = (e.target as HTMLInputElement).value;
+                const t = (field as InputField).type;
+                setByPath(model, field.key, t === 'number' ? (val === '' ? null : Number(val)) : val);
+              }
+            "
+          />
+          <p v-if="field.help" class="mt-1 text-xs opacity-70">
+            {{ field.help }}
+          </p>
+        </div>
+
+        <!-- SWITCH -->
+        <div v-else-if="field.kind === 'switch'" class="mt-2">
+          <label
+            class="inline-flex items-center gap-3 cursor-pointer select-none"
+          >
+            <span
+              class="relative inline-flex items-center w-10 h-6 rounded-full border border-secondary bg-secondary"
+            >
+              <input
+                type="checkbox"
+                class="sr-only"
+                :checked="!!getByPath(model, field.key)"
+                @change="
+                  setByPath(
+                    model,
+                    field.key,
+                    ($event.target as HTMLInputElement).checked
+                  )
+                "
+              />
+              <span
+                class="absolute left-0 top-0 h-6 w-6 rounded-full bg-accent transition-transform"
+                :style="{
+                  transform: !!getByPath(model, field.key)
+                    ? 'translateX(16px)'
+                    : 'translateX(0)',
+                }"
+              />
+            </span>
+            <span class="text-sm opacity-80">{{ field.help }}</span>
+          </label>
+        </div>
+
+        <!-- SLIDER -->
+        <div v-else-if="field.kind === 'slider'" class="mt-2">
+          <Slider
+            :min="(field as SliderField).min"
+            :max="(field as SliderField).max"
+            :step="(field as SliderField).step ?? 1"
+            :model-value="Number(getByPath(model, field.key) ?? (field as SliderField).min)"
+            @update:modelValue="(v:number) => setByPath(model, field.key, (field as SliderField).integer ? Math.round(v) : v)"
+          />
+          <p
+            v-if="(field as SliderField).suffix"
+            class="mt-1 text-xs opacity-70"
+          >
+            {{ getByPath(model, field.key) ?? ""
+            }}{{ (field as SliderField).suffix }}
+          </p>
+          <p v-if="field.help" class="mt-1 text-xs opacity-70">
+            {{ field.help }}
+          </p>
+        </div>
+
+        <!-- RADIO -->
+        <div v-else-if="(field as any).kind === 'radio'" class="mt-2">
+          <div class="flex flex-wrap gap-3">
+            <label
+              v-for="opt in (field as any).options as readonly string[]"
+              :key="opt"
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-secondary bg-primary cursor-pointer hover:bg-secondary/40"
+            >
+              <input
+                type="radio"
+                class="accent-accent"
+                :name="field.key"
+                :value="opt"
+                :checked="getByPath(model, field.key) === opt"
+                @change="setByPath(model, field.key, opt)"
+              />
+              <span class="text-sm">{{ opt }}</span>
+            </label>
+          </div>
+          <p v-if="field.help" class="mt-1 text-xs opacity-70">
+            {{ field.help }}
+          </p>
+        </div>
+
+        <!-- GROUP -->
+        <div v-else-if="field.kind === 'group'" class="mt-2">
+          <div class="flex flex-col gap-3">
+            <div
+              v-for="child in (field as GroupField).children"
+              :key="child.key"
+              class="rounded-xl border border-secondary bg-primary"
+            >
+              <button
+                type="button"
+                class="w-full flex items-center gap-3 px-3 py-2 hover:bg-secondary/40 rounded-xl"
+                @click="toggleOpen(child.key)"
+              >
+                <span
+                  class="inline-flex items-center justify-center size-5 rounded-md border border-secondary text-text/80"
+                  :style="{
+                    transform: isOpen(child.key)
+                      ? 'rotate(90deg)'
+                      : 'rotate(0deg)',
+                  }"
+                  aria-hidden="true"
+                >
+                  ▶
+                </span>
+                <span>{{ child.label }}</span>
+              </button>
+              <div v-show="isOpen(child.key)" class="px-3 pb-3">
+                <PromptPresetForm :spec="[child]" v-model="model" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DISCRIMINATED -->
+        <div v-else-if="field.kind === 'discriminated'" class="mt-2">
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button
+              v-for="ck in Object.keys((field as DiscriminatedField).cases)"
+              :key="ck"
+              type="button"
+              class="px-3 py-1.5 rounded-lg border text-sm"
+              :class="getByPath(model, (field as DiscriminatedField).discriminatorKey) === ck
+                ? 'border-accent bg-secondary/60'
+                : 'border-secondary bg-primary hover:bg-secondary/40'"
+              @click="
+                setByPath(
+                  model,
+                  (field as DiscriminatedField).discriminatorKey,
+                  ck
+                )
+              "
+            >
+              {{ ck }}
+            </button>
+          </div>
+          <div class="flex flex-col gap-3">
+            <template
+              v-for="child in discriminatedChildren(field as DiscriminatedField)"
+              :key="anyKey(child)"
+            >
+              <!-- Skip redundant inner radios bound to discriminatorKey -->
+              <template
+                v-if="!(isRadio(child) && anyKey(child) === (field as DiscriminatedField).discriminatorKey)"
+              >
+                <div class="rounded-xl border border-secondary bg-primary">
+                  <button
+                    type="button"
+                    class="w-full flex items-center gap-3 px-3 py-2 hover:bg-secondary/40 rounded-xl"
+                    @click="toggleOpen(anyKey(child))"
+                  >
+                    <span
+                      class="inline-flex items-center justify-center size-5 rounded-md border border-secondary text-text/80"
+                      :style="{
+                        transform: isOpen(anyKey(child))
+                          ? 'rotate(90deg)'
+                          : 'rotate(0deg)',
+                      }"
+                      aria-hidden="true"
+                    >
+                      ▶
+                    </span>
+                    <span>{{ anyLabel(child) }}</span>
+                  </button>
+                  <div v-show="isOpen(anyKey(child))" class="px-3 pb-3">
+                    <PromptPresetForm :spec="[child as any]" v-model="model" />
+                  </div>
+                </div>
+              </template>
+            </template>
+          </div>
+        </div>
+
+        <!-- UNKNOWN KIND FALLBACK -->
+        <div v-else class="text-sm opacity-70">
+          Unsupported field: {{ (field as any).kind }}
+        </div>
+      </div>

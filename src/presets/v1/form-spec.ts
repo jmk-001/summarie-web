@@ -65,23 +65,6 @@ export const formSpecV1: Field[] = [
           step: 0.05,
         },
       ],
-      maxTokens: [
-        {
-          key: "length.kind",
-          label: "Mode",
-          kind: "radio",
-          options: ["maxTokens"] as const,
-        } as any,
-        {
-          key: "length.maxTokens",
-          label: "Max tokens",
-          kind: "slider",
-          min: 64,
-          max: 8192,
-          step: 32,
-          integer: true,
-        },
-      ],
     },
   },
   { key: "tone", label: "Tone", kind: "select", options: Tones },
@@ -91,13 +74,6 @@ export const formSpecV1: Field[] = [
     label: "Reading level",
     kind: "select",
     options: ReadingLevels,
-  },
-  {
-    key: "language",
-    label: "Language",
-    kind: "input",
-    type: "text",
-    placeholder: "auto / en / ko",
   },
   {
     key: "faithfulness",
@@ -141,20 +117,6 @@ export const formSpecV1: Field[] = [
         options: RedactMode,
       },
     ],
-  },
-  {
-    key: "stylePresetId",
-    label: "Style pack (optional)",
-    kind: "input",
-    type: "text",
-    placeholder: "uuid",
-  },
-  {
-    key: "styleGuidelines",
-    label: "Style guidelines (≤5)",
-    kind: "input",
-    type: "text",
-    help: "Short bullets; sanitized",
   },
   {
     key: "modelControls",

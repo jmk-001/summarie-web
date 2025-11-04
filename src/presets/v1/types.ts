@@ -65,8 +65,7 @@ export type RedactModeT = (typeof RedactMode)[number];
 
 export type OneOfLength =
   | { kind: "words"; words: number }
-  | { kind: "ratio"; ratio: number }
-  | { kind: "maxTokens"; maxTokens: number };
+  | { kind: "ratio"; ratio: number };
 
 export interface PromptPresetParamsV1 {
   objective: Objective;
@@ -75,7 +74,6 @@ export interface PromptPresetParamsV1 {
   tone: Tone;
   audience: Audience;
   readingLevel: ReadingLevel;
-  language: "auto" | string; // ISO 639-1 recommended
   faithfulness: FaithfulnessT;
   compression: number;
   include: {
@@ -85,8 +83,6 @@ export interface PromptPresetParamsV1 {
     timestamps?: boolean;
     redact?: RedactModeT;
   };
-  stylePresetId?: string;
-  styleGuidelines?: string[];
   modelControls?: {
     temperature?: number;
     topP?: number;
