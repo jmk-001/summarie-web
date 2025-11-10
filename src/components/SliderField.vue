@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { label, modelValue, options } = defineProps<{
+const { label, modelValue } = defineProps<{
   label: string;
   modelValue?: string;
   options: readonly string[];
@@ -22,7 +22,6 @@ function onChange(e: Event) {
       :value="modelValue"
       @change="onChange"
     >
-      <option v-for="opt in options" :key="opt" :value="opt">{{ opt }}</option>
     </select>
   </div>
 </template>
