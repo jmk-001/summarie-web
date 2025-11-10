@@ -12,9 +12,6 @@ const { spec } = defineProps<{
 
 const promptPresetStore = usePromptPresetStore();
 
-const promptName = ref<String>("");
-const promptDescription = ref<String>("");
-
 const openKeys = ref<Record<string, boolean>>({});
 
 function isOpen(key: string) {
@@ -22,13 +19,6 @@ function isOpen(key: string) {
 }
 function toggleOpen(key: string) {
   openKeys.value[key] = !openKeys.value[key];
-}
-function onSelectionChanged(key: string, e: Event) {
-  const value = (e.target as HTMLSelectElement).value;
-  console.log(key);
-  promptPresetStore.setParam(key, value);
-  console.log(promptPresetStore.params);
-  openKeys.value[key] = false;
 }
 function getParam(path: string) {
   const parts = path.split(".");
@@ -51,7 +41,7 @@ function isFieldComplete(key: string) {
   <div class="w-full flex flex-col gap-3">
     <div class="p-1">
       <input
-        v-model="promptName"
+        v-model="promptPresetStore.presetName"
         id="presetName"
         type="text"
         placeholder="Name"
@@ -61,7 +51,7 @@ function isFieldComplete(key: string) {
     </div>
     <div class="p-1">
       <input
-        v-model="promptDescription"
+        v-model="promptPresetStore.presetDescription"
         id="presetDescription"
         type="text"
         placeholder="Description"
@@ -107,11 +97,12 @@ function isFieldComplete(key: string) {
       <div v-if="isOpen(field.key) && field.kind === 'select'">
         <SelectField
           :label="field.label"
-          :selected="getParam(field.key)"
           :options="field.options"
-          :key="field.key"
-          :field-key="field.key"
-          :onChanged="onSelectionChanged"
+          :model-value="getParam(field.key)"
+          @update:model-value="(v: string) => {
+            promptPresetStore.setParam(field.key, v)
+            openKeys[field.key] = false
+            }"
         />
       </div>
     </div>
