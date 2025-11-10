@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
-import type { CreateDocumentInput } from "../types/document.types";
 import type { PromptPresetParamsV1 } from "../presets/v1/types";
 import { apolloClient } from "../services/graphql/apollo-client";
-import { CREATE_DOCUMENT } from "../services/graphql";
+import { CREATE_PROMPT_PRESET } from "../services/graphql";
 import { deepSet, deepUnset } from "../utils/dot-path";
+import type { CreatePromptPresetInput } from "../types/prompt-preset.types";
+import type { PromptVisibility } from "../types/prompt-preset.types";
 
 export const usePromptPresetStore = defineStore("prompt-preset", {
   state: () => ({
@@ -16,8 +17,18 @@ export const usePromptPresetStore = defineStore("prompt-preset", {
       return !!(
         state.params.objective &&
         state.params.format &&
-        (state as any).params.length?.kind
+        state.presetName !== "" &&
+        state.presetDescription !== ""
       );
+    },
+    createInput(): CreatePromptPresetInput {
+      return {
+        name: this.presetName,
+        description: this.presetDescription,
+        schemaVersion: 1,
+        params: this.params,
+        visibility: "private" as PromptVisibility,
+      };
     },
   },
   actions: {
@@ -52,12 +63,24 @@ export const usePromptPresetStore = defineStore("prompt-preset", {
       this.params = { ...(partial ?? {}) };
     },
 
-    async createPromptPreset(input: CreateDocumentInput) {
-      const { data } = await apolloClient.mutate({
-        mutation: CREATE_DOCUMENT,
-        variables: { data: input },
-      });
-      return data.createDocument;
+    clearAll() {
+      this.params = {} as Partial<PromptPresetParamsV1>;
+      this.setName("");
+      this.setDescription("");
+    },
+
+    async createPromptPreset(
+      input: CreatePromptPresetInput
+    ): Promise<any | null> {
+      try {
+        const { data } = await apolloClient.mutate({
+          mutation: CREATE_PROMPT_PRESET,
+          variables: { data: input },
+        });
+        return data.createPromptPreset;
+      } catch (e) {
+        throw e;
+      }
     },
   },
 });
